@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>QENVO</title>
+    <link rel="stylesheet" href="style/project.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <script>
+        $(document).ready(function () {
+
+            $("#btnsignup").click(function () {
+                $("#main-content").addClass("blur");
+                $("#sign-upid").show();
+            });
+
+            $("#btn-close").click(function () {
+                $("#main-content").removeClass("blur");
+                $("#sign-upid").hide();
+            });
+
+            $("#btnlogin").click(function () {
+                $("#main-content").addClass("blur");
+                $("#sign-upid1").show();
+            });
+
+            $("#btn-close1").click(function () {
+                $("#main-content").removeClass("blur");
+                $("#sign-upid1").hide();
+            });
+            $("#ajaxid").click(function () {
+                let object = {
+                    type: "get",
+                    url: "/sign-up",
+                    data: {
+                        emailid: $("#txtEmail").val(),
+                        passwords: $("#txtPassword").val(),
+                        usertype: $("#selUType").val()
+                    }
+                };
+
+                $.ajax(object).then(
+                    function (resp) {
+                        alert(resp);
+                    }
+                ).fail(function (error) {
+                    alert("Signup failed:" + error.message);
+                });
+            });
+            $("#ajaxlogin").click(function () {
+                let emailid = $("#txtEmail2").val();
+                let passwords = $("#txtPassword2").val();
+                let obj = {
+                    type: "get",
+                    url: "/do-login",
+                    data: {
+                        emailid: emailid,
+                        passwords: passwords
+                    }
+                };
+                $.ajax(obj).then(function (response) {
+
+                    if (response == "Blocked")
+                        alert("Sorry , Your Id is Blocked !!");
+                    else if (response == "Wrong")
+                        alert("Wrong Password");
+                    else {
+                        if (response == "Player") {
+                            localStorage.setItem("UserActive", emailid);
+                            location.href = "dash-player.html";
+                        }
+                        else if (response == "Organizer") {
+                            localStorage.setItem("UserActive", emailid);
+                            location.href = "org-dash.html";
+                        }
+                        else if (response == "admin") {
+                            localStorage.setItem("UserActive", emailid);
+                            location.href = "dash-admin.html";
+                        }
+                    }
+
+                }).fail(function (error2) {
+                    alert("Signup failed:" + error2.message);
+                });
+            });
+
+        });
+    </script>
+    <style>
+        .txt1 {
+
+            color: red;
+            padding: 1px;
+            border-radius: 10px;
+            margin-top: 2px;
+            line-height: 10px;
+        }
+
+        .txt2 {
+
+            color: rgb(0, 185, 43);
+            padding: 1px;
+            border-radius: 10px;
+            margin-top: 2px;
+            line-height: 10px;
+        }
+
+        .pic1 {
+            background-image: url(pics/cross.jpeg);
+            width: 20px;
+            height: 20px;
+            background-size: contain;
+            border: 1px white solid;
+            border-radius: 60%;
+        }
+
+        .pic2 {
+            background-image: url(pics/tick.png);
+            width: 20px;
+            height: 20px;
+            background-size: contain;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            $("#txtEmail").keyup(function () {
+                let a = $(this).val();
+                let regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+                if (a == "") {
+                    $("#errTxtEmail").html("Empty").addClass("txt1").removeClass("txt2");
+                    $("#errPicEmail").addClass("pic1").removeClass("pic2");
+                    $("#txtEmail").focus();
+                }
+                else if (regex.test(a) == false) {
+                    $("#errTxtEmail").html("Invalid Email").addClass("txt1").removeClass("txt2");
+                    $("#errPicEmail").addClass("pic1").removeClass("pic2");
+                    $("#txtEmail").focus();
+                }
+                else {
+                    $("#errTxtEmail").html("Valid").addClass("txt2").removeClass("txt1");
+                    $("#errPicEmail").addClass("pic2").removeClass("pic1");
+                }
+            })
+            //-------------------------------------------------------------
+            $("#txtPassword").keyup(function () {
+                let v = $(this).val();
+                let regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
+                if (v == "") {
+                    $("#errTxtPassword").html("Empty").addClass("txt1").removeClass("txt2");
+                    $("#errPicPassword").addClass("pic1").removeClass("pic2");
+                    $("#txtPassword").focus();
+                }
+                else if (regex.test(v) == false) {
+                    $("#errTxtPassword").html("Invalid Password").addClass("txt1").removeClass("txt2");
+                    $("#errPicPassword").addClass("pic1").removeClass("pic2");
+                    $("#txtPassword").focus();
+                }
+                else {
+                    $("#errTxtPassword").html("Valid").addClass("txt2").removeClass("txt1");
+                    $("#errPicPassword").addClass("pic2").removeClass("pic1");
+                }
+            })
+            //****************************************************
+            $("#eye").click(function () {
+                let c = $("#txtPassword").prop("type");
+                if (c == "password") {
+                    $("#txtPassword").prop("type", "text");
+                    $(this).removeClass("fa-eye").addClass("fa-eye-slash");
+                }
+                else {
+                    $("#txtPassword").prop("type", "password");
+                    $(this).removeClass("fa-eye-slash").addClass("fa-eye");
+                }
+            })
+            $("#eye2").click(function () {
+                let c = $("#txtPassword2").prop("type");
+                if (c == "password") {
+                    $("#txtPassword2").prop("type", "text");
+                    $(this).removeClass("fa-eye").addClass("fa-eye-slash");
+                }
+                else {
+                    $("#txtPassword2").prop("type", "password");
+                    $(this).removeClass("fa-eye-slash").addClass("fa-eye");
+                }
+            })
+            $("#link-signup").click(function () {
+                $("#sign-upid1").hide();
+                $("#sign-upid").show();
+            });
+            $("#link-login").click(function () {
+                $("#sign-upid").hide();
+                $("#sign-upid1").show();
+            });
+            $("#txtEmail2").keyup(function () {
+                let email = $(this).val();
+                let regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+
+                if (email == "") {
+                    $("#errLoginEmailText").html("Empty").addClass("txt1").removeClass("txt2");
+                    $("#errLoginEmailIcon").addClass("pic1").removeClass("pic2");
+                } else if (!regex.test(email)) {
+                    $("#errLoginEmailText").html("Invalid Format").addClass("txt1").removeClass("txt2");
+                    $("#errLoginEmailIcon").addClass("pic1").removeClass("pic2");
+                } else {
+                    $.get("/check-email", { emailid: email }, function (resp) {
+                        if (resp == "Found") {
+                            $("#errLoginEmailText").html("Valid").addClass("txt2").removeClass("txt1");
+                            $("#errLoginEmailIcon").addClass("pic2").removeClass("pic1");
+                        } else {
+                            $("#errLoginEmailText").html("Not Found").addClass("txt1").removeClass("txt2");
+                            $("#errLoginEmailIcon").addClass("pic1").removeClass("pic2");
+                        }
+                    });
+                }
+            });
+            $("#txtPassword2").keyup(function () {
+                let password = $(this).val();
+                let regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
+
+                if (password == "") {
+                    $("#errLoginpasswordText").html("Empty").addClass("txt1").removeClass("txt2");
+                    $("#errLoginpasswordIcon").addClass("pic1").removeClass("pic2");
+                } else if (!regex.test(password)) {
+                    $("#errLoginpasswordText").html("Invalid Format").addClass("txt1").removeClass("txt2");
+                    $("#errLoginpasswordIcon").addClass("pic1").removeClass("pic2");
+                } else {
+                    $.get("/check-password", { passwords: password }, function (resp) {
+                        if (resp == "Found") {
+                            $("#errLoginpasswordText").html("Valid").addClass("txt2").removeClass("txt1");
+                            $("#errLoginpasswordIcon").addClass("pic2").removeClass("pic1");
+                        } else {
+                            $("#errLoginpasswordText").html("Not Found").addClass("txt1").removeClass("txt2");
+                            $("#errLoginpasswordIcon").addClass("pic1").removeClass("pic2");
+                        }
+                    });
+                }
+            });
+            $(document).ready(function () {
+                $(window).scroll(function () {
+                    if ($(this).scrollTop() > 100) {
+                        $("#backToTopBtn").fadeIn();
+                    } else {
+                        $("#backToTopBtn").fadeOut();
+                    }
+                });
+            });
+
+
+        })
+    </script>
+</head>
+
+
+<body id="backtotop">
+    <center id="main-content">
+        <nav class="navbar navbar-light  sticky-top shadow-sm px-4" style="background-color: rgb(88, 217, 252);">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="pics/newlogo.png" alt="logo" style="width: 50px;height: 50px;background-size: contain;">
+                <h4 style="margin-left: 20px; font-size: 35px;">Qenvo</h4>
+                <div class="d-flex align-items-center gap-4">
+                    <a class="nav-link text-dark" href="#reach-us">Reach Us</a>
+                    <a class="nav-link text-dark" href="#developers">Developers</a>
+                </div>
+            </a>
+            <div>
+                <button class="btn btn-div bg-light" id="btnlogin">Login</button>
+                <button class="btn btn-div bg-light" id="btnsignup">Sign-Up</button>
+            </div>
+        </nav>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel"
+                        style="margin-top: 20px;">
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <img src="pics/aa7.jpg" class="d-block w-100" alt="..." style="height: 300px;">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="pics/aa1.jpeg" class="d-block w-100" alt="..." style="height: 300px;">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="pics/aa8.jpg" class="d-block w-100" alt="..." style="height: 300px;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <nav class="navbar">
+            <div
+                style="line-height: 40px;text-align:center;font-weight: bolder;margin:auto;font-size: 45px;  margin-bottom: 25px; margin-top: 20px;">
+                Our Services
+            </div>
+        </nav>
+        <div class="container text-center">
+            <div class="row">
+                <div class="col">
+                    <div class="card bg-light shadow-lg p-3 mb-5 bg-body-tertiary rounded"
+                        style="width: 18rem;float: left;margin-left: 80px;border: 1px black solid;">
+                        <img src="pics/tournaments.jpeg" class="card-img-top" alt="..."
+                            style="height: 180px;border: 1px black solid;width: 120px; margin: auto;height: 120px;margin-top: 30px;border-radius: 50%;">
+                        <div class="card-body">
+                            <h2 class="card-title">Tournaments</h2>
+                            <p class="card-text">"Discover and host tournaments in cities across the country,
+                                connect
+                                with
+                                players and organizers, and build a thriving sports community."</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card bg-light shadow-lg p-3 mb-5 bg-body-tertiary rounded"
+                        style="width: 18rem;float: left; margin-left:70px; border: 1px black solid;">
+                        <img src="pics/organization3.png" class="card-img-top" alt="..."
+                            style="height: 180px;border: 1px black solid;width: 120px; margin: auto;height: 120px;margin-top: 30px;border-radius: 50%;">
+                        <div class="card-body">
+                            <h2 class="card-title">Organizations</h2>
+                            <p class="card-text">“Organizations can efficiently manage every
+                                aspect of their tournaments and broadcast them effortlessly to a wide range of audience,
+                                boosting visibility , brand recognition.”</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card bg-light shadow-lg p-3 mb-5 bg-body-tertiary rounded "
+                        style="width: 18rem;float: left; margin-left: 80px;border: 1px black solid;">
+                        <img src="pics/player.png" class="card-img-top" alt="..."
+                            style="height: 180px;border: 1px black solid;width: 120px; margin: auto;height: 120px;margin-top: 30px;border-radius: 50%;">
+                        <div class="card-body">
+                            <h2 class="card-title">Sports Person</h2>
+                            <p class="card-text">“Players can browse, select, and take part in tournaments for any sport
+                                of their choice with ease, confidence, greater competitive spirit, and meaningful skill
+                                development.”</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <nav class="navbar">
+            <div style="line-height: 40px;font-weight: bolder;margin:auto;font-size: 45px;  margin-bottom: 25px; ">
+                Mission
+            </div>
+        </nav>
+        <div class="container px-4 text-center">
+            <div class="row gx-5">
+                <div class="col " style="height: 260px;">
+                    <div class="p-3">
+                        <img src="pics/mission.jpeg" alt="" style="width: 450px;height: 230px;border-radius: 3%;">
+                    </div>
+                </div>
+                <div class="col  shadow-lg p-3 mb-5 bg-body-tertiary rounded"
+                    style="height: 260px;border: 1px black solid;">
+                    <div class="p-4 " style="font-size: 20px;">"To revolutionize the sports ecosystem by enabling
+                        seamless tournament discovery, effortless organization, and meaningful participation for
+                        everyone — fostering community engagement, promoting athletic talent, and creating a dynamic
+                        platform that supports growth at every level."</div>
+                </div>
+            </div>
+        </div>
+        <nav class="navbar">
+            <div style="line-height: 40px;font-weight: bolder;margin:auto;font-size: 45px;  margin-bottom: 25px; "
+                id="developers">
+                Meet The Developers
+            </div>
+        </nav>
+        <div class="container px-4 text-center">
+            <div class="row gx-5">
+                <div class="col ">
+                    <div class="p-3">
+                        <div class="card mb-3 shadow-lg p-3 mb-5 bg-body-tertiary rounded"
+                            style="max-width: 540px; float: left;border: 1px black solid;">
+                            <div class="row g-0">
+                                <div class="col-md-4">
+                                    <img src="pics/rajeshsir.png" class="img-fluid rounded-start" alt="...">
+                                </div>
+                                <div class="col-md-8 bg-light">
+                                    <div class="card-body">
+                                        <h3 class="card-title">Under The Guidance Of</h3>
+                                        <p class="card-text ">
+                                            Mr.Rajesh Kumar Bansal <br>
+                                            Author of 'Real Java' book <br>
+                                            Bangalore Computer Education
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="p-3">
+                        <div class="card mb-3 shadow-lg p-3 mb-5 bg-body-tertiary rounded"
+                            style="max-width: 540px;border: 1px black solid;">
+                            <div class="row g-0">
+                                <div class="col-md-4">
+                                    <img src="pics/me.jpg" class="img-fluid rounded-start" alt="...">
+                                </div>
+                                <div class="col-md-8 bg-light">
+                                    <div class="card-body">
+                                        <h3 class="card-title">Developed By</h3>
+                                        <p class="card-text">
+                                            Mr.Ankush Mangla <br>
+                                            B.tech from TIET, Patiala <br>
+                                            Computer Engineering
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <nav class="navbar">
+            <div style="line-height: 40px;font-weight: bolder;margin:auto;font-size: 45px;  margin-bottom: 25px;"
+                id="reach-us">
+                Reach Us
+            </div>
+        </nav>
+        <div class="card mb-3 shadow-lg p-3 mb-5 bg-body-tertiary rounded"
+            style="max-width: 800px;border: 1px black solid;height: 250px;">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d2050.287215292941!2d74.9579538612951!3d30.204027944766107!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMzDCsDEyJzExLjIiTiA3NMKwNTcnMjkuMyJF!5e0!3m2!1sen!2sin!4v1753017133855!5m2!1sen!2sin"
+                        width="350" height="210" allowfullscreen="" loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <p class="card-text">
+                        <div style="margin-top: 50px;font-size: 18px;margin-left: 80px;">
+                            Contact - 9463005285 <br>
+                            Emailid - www.qenvoq@gmail.com <br>
+                        </div>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="backToTopBtn">
+            <a href="#backtotop">
+                <img src="pics/toparrow.png" alt="Top" class="img-fluid">
+            </a>
+        </div>
+
+    </center>
+    <div class="modal " tabindex="-1" id="sign-upid">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content ">
+                <div class="modal-header">
+                    <h5 class="modal-title">Sign-up</h5>
+                    <button type="button" class="btn-close" id="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="txtEmail" placeholder="name@example.com">
+                        <label for="floatingInput">Email address</label>
+                        <div style="display: flex;">
+                            <div id="errPicEmail" style="margin-right: 10px;"></div>
+                            <div id="errTxtEmail"></div>
+                        </div>
+                    </div>
+                    <div class="form-floating">
+                        <input type="password" class="form-control" id="txtPassword" placeholder="Password">
+                        <label for="floatingPassword">Password</label>
+                        <i class="fa-solid fa-eye fa-fade" id="eye" style="margin-right: 20px;"></i>
+                        <div style="display: flex;">
+
+                            <div id="errPicPassword" style="margin-right: 10px;"></div>
+                            <div id="errTxtPassword"></div>
+                        </div>
+                    </div>
+                    <div style="margin-left: 90px;">
+                        <label for="User Type">User Type</label>
+                        <select name="" id="selUType">
+                            <option value="Organizer">Organizer</option>
+                            <option value="Player">Player</option>
+                        </select>
+                    </div>
+                    <p style="margin-left: 70px;font-size: 14px;padding-top: 30px;">Want to login ?
+                        <a href="#" id="link-login" style="font-size: 13px;">Login Here</a>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="ajaxid">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" tabindex="-1" id="sign-upid1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Login</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                        id="btn-close1"></button>
+                </div>
+                <div class="modal-body">
+                    <p>
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="txtEmail2" placeholder="name@example.com">
+                        <label for="floatingInput">Email address</label>
+                        <div style="display: flex;">
+                            <div id="errLoginEmailIcon" style="margin-right: 10px;"></div>
+                            <div id="errLoginEmailText"></div>
+                        </div>
+
+                    </div>
+                    <div class="form-floating">
+                        <input type="password" class="form-control" id="txtPassword2" placeholder="Password">
+                        <label for="floatingPassword">Password</label>
+                        <i class="fa-solid fa-eye fa-fade" id="eye2" style="margin-right: 20px;"></i>
+                        <div style="display: flex;">
+                            <div id="errLoginpasswordIcon" style="margin-right: 10px;"></div>
+                            <div id="errLoginpasswordText"></div>
+                        </div>
+                    </div>
+                    <p style="margin-left: 50px;font-size: 14px;padding-top: 30px;">Not Signed-up yet ?
+                        <a href="#" id="link-signup" style="font-size: 13px;">Sign-up Here</a>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="ajaxlogin">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

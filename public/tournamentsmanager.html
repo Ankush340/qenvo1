@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Manage Tournaments</title>
+    <link rel="stylesheet" href="style/project.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script>
+        var mymodule = angular.module("Bmodule", []);
+        mymodule.controller("Bcontroller", function ($scope, $http) {
+            $scope.txtEmail5 = localStorage.getItem("UserActive");
+
+            $scope.doshow = function () {
+                $scope.jsonarray = [];
+
+                var url = "/do-fetch-all-users?emailid=" + $scope.txtEmail5;
+                $http.get(url).then(
+                    function (response) {
+                        $scope.jsonarray = response.data;
+                        if ($scope.jsonarray.length == 0) {
+                            alert("No events found for this Email ID.");
+                        }
+                    },
+                    function (response) {
+                        alert("Error fetching events: " + JSON.stringify(response.data));
+                    }
+                );
+            };
+
+            $scope.deleteTournament = function (rid) {
+                if (!confirm("Are you sure you want to delete this tournament?")) return;
+
+                var url = "/do-delete-tournament?rid=" + rid;
+                $http.get(url).then(
+                    function (response) {
+                        alert("Deleted successfully!");
+                        $scope.doshow();
+                    },
+                    function (response) {
+                        alert("Delete failed: " + JSON.stringify(response.data));
+                    }
+                );
+            };
+        });
+    </script>
+</head>
+
+<body ng-controller="Bcontroller" ng-app="Bmodule">
+    <nav class="navbar navbar-light  shadow-sm px-4" style="background-color: rgb(88, 217, 252);">
+        <a class="navbar-brand d-flex align-items-center" href="#">
+            <img src="pics/newlogo.png" alt="logo" style="width: 50px;height: 50px;background-size: contain;">
+            <h4 style="margin-left: 20px; font-size: 35px;">Qenvo</h4>
+        </a>
+    </nav>
+
+    <center>
+        <div class="container mt-4">
+            <div class="row">
+                <div class="col-md-10 offset-md-1 bg-info ">
+                    <center>
+                        <h2>Explore Events</h2>
+                    </center>
+                </div>
+            </div>
+        </div>
+
+        <div class="container mt-4">
+            <div class="bordered-box bg-light shadow-lg p-3 mb-5 bg-body-tertiary rounded" style="width: 600px;">
+                <h4>
+                    Email ID:
+                    <input type="text" ng-model="txtEmail5" placeholder="Enter your Email ID" id="txtEmail5"
+                        style="width: 400px; margin-top: 5px;font-size: 18px;text-align: center;">
+                    <input type="button" value="Show Events" class="btn bg-info" ng-click="doshow();"
+                        style="margin-top: 18px;">
+                </h4>
+            </div>
+        </div>
+        <table class="table table-bordered table-striped table-hover container mt-4" border="1">
+            <thead class="table-primary">
+                <tr>
+                    <th>Sr.No</th>
+                    <th>Email ID</th>
+                    <th>Event</th>
+                    <th>Date Of Event</th>
+                    <th>Time Of Event</th>
+                    <th>Address</th>
+                    <th>City</th>
+                    <th>Sports</th>
+                    <th>Minimum Age</th>
+                    <th>Maximum Age</th>
+                    <th>Last Date</th>
+                    <th>Fee</th>
+                    <th>Prize</th>
+                    <th>Contact</th>
+                    <th>Operations</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="obj in jsonarray">
+                    <td>{{obj.rid}}</td>
+                    <td>{{obj.emailid}}</td>
+                    <td>{{obj.event}}</td>
+                    <td>{{obj.doe}}</td>
+                    <td>{{obj.toe}}</td>
+                    <td>{{obj.address}}</td>
+                    <td>{{obj.city}}</td>
+                    <td>{{obj.sports}}</td>
+                    <td>{{obj.minage}}</td>
+                    <td>{{obj.maxage}}</td>
+                    <td>{{obj.lastdate}}</td>
+                    <td>{{obj.fee}}</td>
+                    <td>{{obj.prize}}</td>
+                    <td>{{obj.contact}}</td>
+                    <td>
+                        <button class="btn btn-danger btn-sm" ng-click="deleteTournament(obj.rid)">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </center>
+</body>
+
+</html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Document</title>
+    <link rel="stylesheet" href="style/project.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function () {
+            $("#settings").click(function () {
+                $("#setting-modal").fadeIn();
+                $("#full-page").addClass("blur");
+            });
+            $("#btn-close").click(function () {
+                $("#setting-modal").fadeOut();
+                $("#full-page").removeClass("blur");
+            });
+        });
+    </script>
+    <script>
+        var mymodule = angular.module("DModule", []);
+        mymodule.controller("DController", function ($scope, $http) {
+            $scope.doupdate = function () {
+                var url = "/update-password?emailid=" + $scope.setemailid + "&oldpassword=" + $scope.oldpassword + "&newpassword=" + $scope.newpassword;
+
+                $http.get(url).then(dfx, ffx);
+                function dfx(response) {
+                    alert(response.data.message);
+                } function ffx(response) {
+                    alert(JSON.stringify(response.data));
+                };
+            };
+        }); 
+    </script>
+    <script>
+        function dologout() {
+            localStorage.removeItem("UserActive");
+            location.href = "index.html";
+        }
+    </script>
+    <script>
+        function doshw() {
+            let ActuveUser = localStorage.getItem("UserActive");
+            let scope = angular.element(document.querySelector('[ng-controller="DController"]')).scope();
+            scope.$apply(function () {
+                scope.setemailid = ActuveUser;
+            });
+        }
+
+    </script>
+    <style>
+        .txt1 {
+
+            color: red;
+            padding: 1px;
+            border-radius: 10px;
+            margin-top: 2px;
+            line-height: 10px;
+        }
+
+        .txt2 {
+
+            color: rgb(0, 185, 43);
+            padding: 1px;
+            border-radius: 10px;
+            margin-top: 2px;
+            line-height: 10px;
+        }
+
+        .pic1 {
+            background-image: url(pics/cross.jpeg);
+            width: 20px;
+            height: 20px;
+            background-size: contain;
+            border: 1px white solid;
+            border-radius: 60%;
+        }
+
+        .pic2 {
+            background-image: url(pics/tick.png);
+            width: 20px;
+            height: 20px;
+            background-size: contain;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            $("#newpassword").keyup(function () {
+                let v = $(this).val();
+                let regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
+                if (v == "") {
+                    $("#errnewpasswordText").html("Empty").addClass("txt1").removeClass("txt2");
+                    $("#errnewpasswordIcon").addClass("pic1").removeClass("pic2");
+                    $("#newPassword").focus();
+                }
+                else if (regex.test(v) == false) {
+                    $("#errnewpasswordText").html("Invalid Password").addClass("txt1").removeClass("txt2");
+                    $("#errnewpasswordIcon").addClass("pic1").removeClass("pic2");
+                    $("#newpassword").focus();
+                }
+                else {
+                    $("#errnewpasswordText").html("Valid").addClass("txt2").removeClass("txt1");
+                    $("#errnewpasswordIcon").addClass("pic2").removeClass("pic1");
+                }
+            })
+            $("#oldpassword").keyup(function () {
+                let password = $(this).val();
+                let regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
+
+                if (password == "") {
+                    $("#erroldpasswordText").html("Empty").addClass("txt1").removeClass("txt2");
+                    $("#erroldpasswordIcon").addClass("pic1").removeClass("pic2");
+                } else if (!regex.test(password)) {
+                    $("#erroldpasswordText").html("Invalid Format").addClass("txt1").removeClass("txt2");
+                    $("#erroldpasswordIcon").addClass("pic1").removeClass("pic2");
+                } else {
+                    $.get("/check-password", { passwords: password }, function (resp) {
+                        if (resp == "Found") {
+                            $("#erroldpasswordText").html("Valid").addClass("txt2").removeClass("txt1");
+                            $("#erroldpasswordIcon").addClass("pic2").removeClass("pic1");
+                        } else {
+                            $("#erroldpasswordText").html("Not Found").addClass("txt1").removeClass("txt2");
+                            $("#erroldpasswordIcon").addClass("pic1").removeClass("pic2");
+                        }
+                    });
+                }
+            });
+        })
+    </script>
+</head>
+
+<body ng-controller="DController" ng-app="DModule" onload="doshw();">
+    <center id="full-page">
+        <nav class="navbar navbar-light  shadow-sm px-4" style="background-color: rgb(88, 217, 252);">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="pics/newlogo.png" alt="logo" style="width: 50px;height: 50px;background-size: contain;">
+                <h4 style="margin-left: 20px; font-size: 35px;">Qenvo</h4>
+            </a>
+        </nav>
+        <div class="container text-center">
+            <nav class="navbar">
+                <div
+                    style="line-height: 60px;text-align:center; width: 700px ; font-weight: bolder;margin:auto;font-size: 40px;  margin-bottom: 25px; margin-top: 60px;background-color:  rgb(88, 217, 252);">
+                    Player Management Panel
+                </div>
+            </nav>
+            <div class="row" style="margin-top: 50px;">
+                <div class="col">
+                    <div class="card bg-light shadow-lg p-3 mb-5 bg-body-tertiary rounded"
+                        style="width: 18rem;float: left;margin-left: 10px;border: 1px black solid;height: 430px;">
+                        <img src="pics/propic.jpeg" class="card-img-top" alt="..."
+                            style="height: 180px;border: 1px black solid;width: 120px; margin: auto;height: 120px;margin-top: 30px;border-radius: 50%;">
+                        <div class="card-body">
+                            <p class="card-text">"Create and personalize your player profile here to showcase your
+                                skills,
+                                join exciting tournaments, connect with other players, and make your mark in the sports
+                                community."</p>
+                            <a href="profile-player.html" class="btn btn-info btnplayer"
+                                style="margin-left: 0px;">Profile</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card bg-light shadow-lg p-3 mb-5 bg-body-tertiary rounded"
+                        style="width: 18rem;float: left; margin-left: 10px; border: 1px black solid;">
+                        <img src="pics/events.png" class="card-img-top" alt="..."
+                            style="height: 180px;border: 1px black solid;width: 120px; margin: auto;height: 120px;margin-top: 30px;border-radius: 50%;">
+                        <div class="card-body">
+                            <p class="card-text">"Find and explore a wide range of tournaments here based on your
+                                favorite
+                                sport, skill level, and interests — and take the next step toward competitive play.
+                                "</p>
+                            <a href="tournamentfind.html" class="btn btn-info btnplayer"
+                                style="margin-left: 10px;">Explore
+                                Events</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card bg-light shadow-lg p-3 mb-5 bg-body-tertiary rounded "
+                        style="width: 18rem;float: left; margin-left: 10px;border: 1px black solid;">
+                        <img src="pics/seetingd.png" class="card-img-top" alt="..."
+                            style="height: 180px;border: 1px black solid;width: 120px; margin: auto;height: 120px;margin-top: 30px;border-radius: 50%;">
+                        <div class="card-body">
+                            <p class="card-text">"Click here to update your password and ensure the safety of your
+                                account
+                                by regularly changing your credentials and keeping your login information secure."</p>
+                            <a href="" class="btn btn-info btnplayer" style="margin-left: 10px;"
+                                id="settings">Settings</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card bg-light shadow-lg p-3 mb-5 bg-body-tertiary rounded "
+                        style="width: 18rem;float: left; margin-left: 10px;border: 1px black solid;">
+                        <img src="pics/logout.png" class="card-img-top" alt="..."
+                            style="height: 180px;border: 1px black solid;width: 120px; margin: auto;height: 120px;margin-top: 30px;border-radius: 50%;">
+                        <div class="card-body">
+                            <p class="card-text">"Click here to securely log out, close your session, and protect your
+                                account from potential misuse or unauthorized activity.
+                                "</p>
+                            <a href="" class="btn btn-info btnplayer" style="margin-left: 10px;"
+                                onclick="dologout();">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </center>
+
+    <div class="modal" tabindex="-1" id="setting-modal">
+        <div class="modal-dialog">
+            <div class="modal-content shadow-lg p-3 mb-5 bg-body-tertiary rounded" style="border: 1px black solid;">
+                <div class="modal-header">
+                    <h5 class="modal-title">Settings</h5>
+                    <button type="button" class="btn-close" id="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>
+                    <div class="form-floating mb-4">
+                        <input type="email" class="form-control" id="setemailid" placeholder="name@example.com"
+                            ng-model="setemailid" readonly required>
+                        <label for="floatingInput">Email Id</label>
+                    </div>
+                    <div class="form-floating mt-3 mb-3">
+                        <input type="password" class="form-control" id="oldpassword" placeholder="Password"
+                            ng-model="oldpassword" required>
+                        <label for="floatingPassword"> Old Password</label>
+                        <div style="display: flex;">
+                            <div id="erroldpasswordIcon" style="margin-right: 10px;"></div>
+                            <div id="erroldpasswordText"></div>
+                        </div>
+                    </div>
+                    <div class="form-floating mt-3 mb-3">
+                        <input type="password" class="form-control" id="newpassword" placeholder="Password"
+                            ng-model="newpassword" required>
+                        <label for="floatingPassword">New Password</label>
+                        <div style="display: flex;">
+                            <div id="errnewpasswordIcon" style="margin-right: 10px;"></div>
+                            <div id="errnewpasswordText"></div>
+                        </div>
+                    </div>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" ng-click="doupdate();">Update Password</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

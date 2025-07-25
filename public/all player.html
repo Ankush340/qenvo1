@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
+    <link rel="stylesheet" href="style/project.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+        crossorigin="anonymous"></script>
+    <script>
+        var mymodule = angular.module("Mmodule", []);
+        mymodule.controller("Mcontroller", function ($scope, $http) {
+            $scope.jsonplayer = [];
+            $scope.showplayer = function () {
+                var url = "/do-show-player";
+                $http.get(url).then(allGoodFx, someBadFx);
+                function allGoodFx(response) {
+                    $scope.jsonplayer = response.data;
+                }
+
+                function someBadFx(response) {
+                    alert(JSON.stringify(response.data));
+                }
+            }
+        })
+    </script>
+</head>
+
+<body ng-app="Mmodule" ng-controller="Mcontroller" ng-init="showplayer();">
+    <nav class="navbar navbar-light  shadow-sm px-4" style="background-color: rgb(88, 217, 252);">
+        <a class="navbar-brand d-flex align-items-center" href="#">
+            <img src="pics/newlogo.png" alt="logo" style="width: 50px;height: 50px;background-size: contain;">
+            <h4 style="margin-left: 20px; font-size: 35px;">Qenvo</h4>
+        </a>
+    </nav>
+    <div class="row ">
+        <div class="col-md-8 offset-md-2 bg-info" style="margin-top: 30px;">
+            <center>
+                <h2>Explore Players</h2>
+            </center>
+        </div>
+    </div>
+    <table
+        class="table table-bordered table-striped table-hover container mt-4 container mt-4 shadow-lg p-3 mb-5 bg-body-tertiary rounded"
+        style="border: 1px black solid;">
+        <thead class="table-primary">
+            <tr>
+                <th>Sr.No</th>
+                <th>Email ID</th>
+                <th>Aadhar Card</th>
+                <th>Profile Pic</th>
+                <th>Name</th>
+                <th>Date Of Birth</th>
+                <th>Gender</th>
+                <th>Address</th>
+                <th>Contact</th>
+                <th>Other Information</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="obj in jsonplayer">
+                <td>{{$index+1}}</td>
+                <td><img ng-src="{{obj.acardpicurl}}" width="100"></td>
+                <td><img ng-src="{{obj.profilepicurl}}" width="100"></td>
+                <td>{{obj.name}}</td>
+                <td>{{obj.dob}}</td>
+                <td>{{obj.gender}}</td>
+                <td>{{obj.address}}</td>
+                <td>{{obj.contact}}</td>
+                <td>{{obj.game}}</td>
+                <td>{{obj.otherinfo}}</td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+
+</html>

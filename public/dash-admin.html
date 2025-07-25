@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style/project.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+        crossorigin="anonymous"></script>
+    <script>
+        function dologout() {
+            localStorage.removeItem("UserActive");
+            location.href = "index.html";
+        }
+    </script>
+</head>
+
+<body >
+    <nav class="navbar navbar-light  shadow-sm px-4" style="background-color: rgb(88, 217, 252);">
+        <a class="navbar-brand d-flex align-items-center" href="#">
+            <img src="pics/newlogo.png" alt="logo" style="width: 50px;height: 50px;background-size: contain;">
+            <h4 style="margin-left: 20px; font-size: 35px;">Qenvo</h4>
+        </a>
+        <div>
+            <button class="btn btn-div bg-light" id="btnlogin" onclick="dologout();">Logout</button>
+        </div>
+    </nav>
+    <div class="container text-center">
+        <nav class="navbar">
+            <div
+                style="line-height: 60px;text-align:center; width: 700px ; font-weight: bolder;margin:auto;font-size: 40px;  margin-bottom: 25px; margin-top: 60px;background-color:  rgb(88, 217, 252);">
+                Admin Control Panel 
+            </div>
+        </nav>
+        <div class="row" style="margin-top: 50px;">
+            <div class="col">
+                <div class="card bg-light shadow-lg p-3 mb-5 bg-body-tertiary rounded"
+                    style="width: 18rem;float: left;margin-left: 80px;border: 1px black solid;">
+                    <img src="pics/admin.png" class="card-img-top" alt="..."
+                        style="height: 180px;border: 1px black solid;width: 120px; margin: auto;height: 120px;margin-top: 30px;border-radius: 50%;">
+                    <div class="card-body">
+                        <p class="card-text">"Click here to restrict or reinstate user access based on their status."</p>
+                        <a href="admin-console.html" class="btn btn-primary btnplayer" style="margin-left: 0px;">Users Console</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card bg-light shadow-lg p-3 mb-5 bg-body-tertiary rounded"
+                    style="width: 18rem;float: left; margin-left:70px; border: 1px black solid;">
+                    <img src="pics/organization.png" class="card-img-top" alt="..."
+                        style="height: 180px;border: 1px black solid;width: 120px; margin: auto;height: 120px;margin-top: 30px;border-radius: 50%;">
+                    <div class="card-body">
+                        <p class="card-text">"Access the full directory of event organizers here."</p>
+                        <a href="all organizers.html" class="btn btn-primary btnplayer" style="margin-left: 0px;">All Organizers</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card bg-light shadow-lg p-3 mb-5 bg-body-tertiary rounded "
+                    style="width: 18rem;float: left; margin-left: 80px;border: 1px black solid;">
+                    <img src="pics/player3.jpeg" class="card-img-top" alt="..."
+                        style="height: 180px;border: 1px black solid;width: 120px; margin: auto;height: 120px;margin-top: 30px;border-radius: 50%;">
+                    <div class="card-body">
+                        <p class="card-text">"View all registered players by clicking here."</p>
+                        <a href="all player.html" class="btn btn-primary btnplayer" style="margin-left: 0px;">All Players</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

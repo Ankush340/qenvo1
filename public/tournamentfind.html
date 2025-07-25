@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style/project.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+        crossorigin="anonymous"></script>
+
+    <title>Document</title>
+    <script>
+        var mymodule = angular.module("FindModule", []);
+
+        mymodule.controller("FindController", function ($scope, $http) {
+            $scope.jsonArray = [];
+            $scope.selCity = "none";
+            $scope.selGame = "none";
+            $scope.doFetchAll = function () {
+                var url = "/do-fetch-all-tournaments?kuchCity=" + $scope.selCity + "&kuchGame=" + $scope.selGame;
+
+
+                $http.get(url).then(allGoodFx, someBadFx);
+                function allGoodFx(response) {
+                    //resp in JSON array
+                    //alert(JSON.stringify(response.data));
+                    $scope.jsonArray = response.data;
+                }
+
+                function someBadFx(response) {
+                    alert(JSON.stringify(response.data));
+                }
+            };
+            $scope.cities = [{}];
+            $scope.doFetchAlCities = function () {
+                var url = "/do-fetch-all-cities";
+
+                $http.get(url).then(allGoodFx, someBadFx);
+                function allGoodFx(response) {
+                    //resp in JSON array
+                    //alert(JSON.stringify(response.data));
+                    $scope.cities = response.data;
+                }
+
+                function someBadFx(response) {
+                    alert(JSON.stringify(response.data));
+                }
+            };
+
+            //==================================================
+            $scope.oneRecord = {};
+            $scope.doShowDetails = function (index) {
+                //alert(JSON.stringify($scope.jsonArray[index]))
+                $scope.oneRecord = $scope.jsonArray[index];
+
+            }
+        });
+    </script>
+</head>
+
+<body ng-app="FindModule" ng-controller="FindController" ng-init="doFetchAlCities();">
+    <nav class="navbar navbar-light  shadow-sm px-4" style="background-color: rgb(88, 217, 252);">
+        <a class="navbar-brand d-flex align-items-center" href="#">
+            <img src="pics/newlogo.png" alt="logo" style="width: 50px;height: 50px;background-size: contain;">
+            <h4 style="margin-left: 20px; font-size: 35px;">Qenvo</h4>
+        </a>
+    </nav>
+    <center>
+        <div class="container mt-4">
+            <div class="row ">
+                <div class="col-md-8 offset-md-2 bg-info">
+                    <center>
+                        <h2>Available Tournaments</h2>
+                    </center>
+                </div>
+            </div>
+            <div class="container mt-4">
+                <div class="bordered-box bg-light shadow-lg p-3 mb-5 bg-body-tertiary rounded" style="width: 400px;">
+                    <div style="background-color: rgb(88, 217, 252);width: 160px;border: 1px black solid;line-height: 36px;">
+                        <label value="Sports ">Sports</label>
+                        <select ng-model="selGame">
+                            <option selected value="none">Select</option>
+                            <option value="Football">Football</option>
+                            <option value="Cricket">Cricket</option>
+                            <option value="Badminton">Badminton</option>
+                            <option value="Hockey">Hockey</option>
+                            <option value="Kabaddi">Kabaddi</option>
+                            <option value="Basketball">Basketball</option>
+                            <option value="Boxing">Boxing</option>
+                            <option value="Tennis">Tennis</option>
+                        </select>
+                    </div>
+                    <br>
+                    <div style="background-color: rgb(88, 217, 252);width: 128px;border: 1px black solid;line-height: 36px;text-align: center;">
+                        <label value="City">City</label>
+                        <Select ng-model="selCity">
+                            <option value="none">select</option>
+                            <option ng-repeat="obj in cities" value={{obj.city}}>{{obj.city}}</option>
+                        </Select>
+                    </div>
+                    <br>
+                    <input type="button" value="Find Tournaments" ng-click="doFetchAll();" class="btn1-div">
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3  p-3 mb-2 " ng-repeat="obj in jsonArray">
+                        <div class="card shadow-lg p-3 mb-5 bg-body-tertiary rounded" style="border: 1px black solid;">
+                            <div class="card-body ">
+                                <h5 class="card-title">
+                                    {{obj.event}}
+                                </h5>
+                                <p class="card-text">
+                                    {{obj.emailid}}
+                                </p>
+                                <p class="card-text">
+                                    {{obj.sports}}
+                                </p>
+                                <a href="#" class="btn btn-primary" data-bs-toggle="modal"
+                                    data-bs-target="#detailsModal" ng-click="doShowDetails($index);">Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ************************** -->
+
+            <!-- Modal -->
+            <div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Information</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>
+                            <h5>Event Name : {{oneRecord.event}}</h5>
+                            Emailid : {{oneRecord.emailid}} <br>
+                            Address : {{oneRecord.address}} <br>
+                            City : {{oneRecord.city}} <br>
+                            Sports : {{oneRecord.sports}} <br>
+                            Last Date to Register : {{oneRecord.lastdate}} <br>
+                            Minimum Age : {{oneRecord.minage}} <br>
+                            Maximum Age : {{oneRecord.maxage}} <br>
+                            Fee : {{oneRecord.fee}} <br>
+                            Prize : {{oneRecord.prize}} <br>
+                            Contact : {{oneRecord.contact}}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </center>
+</body>
+
+</html>

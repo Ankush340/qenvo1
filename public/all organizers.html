@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
+    <link rel="stylesheet" href="style/project.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+        crossorigin="anonymous"></script>
+    <script>
+        var mymodule = angular.module("Mmodule", []);
+        mymodule.controller("Mcontroller", function ($scope, $http) {
+            $scope.jsonorg = [];
+            $scope.showorg = function () {
+                var url = "/do-show-org";
+                $http.get(url).then(allGoodFx, someBadFx);
+                function allGoodFx(response) {
+                    $scope.jsonorg = response.data;
+                }
+
+                function someBadFx(response) {
+                    alert(JSON.stringify(response.data));
+                }
+            }
+        })
+    </script>
+</head>
+
+<body ng-app="Mmodule" ng-controller="Mcontroller" ng-init="showorg();">
+    <nav class="navbar navbar-light  shadow-sm px-4" style="background-color: rgb(88, 217, 252);">
+        <a class="navbar-brand d-flex align-items-center" href="#">
+            <img src="pics/newlogo.png" alt="logo" style="width: 50px;height: 50px;background-size: contain;">
+            <h4 style="margin-left: 20px; font-size: 35px;">Qenvo</h4>
+        </a>
+    </nav>
+    <div class="row ">
+        <div class="col-md-8 offset-md-2 bg-info" style="margin-top: 30px;">
+            <center>
+                <h2>Explore Organizers</h2>
+            </center>
+        </div>
+    </div>
+    <table class="table table-bordered table-striped table-hover container mt-4 shadow-lg p-3 mb-5 bg-body-tertiary rounded" style="max-width: 95%;border: 1px black solid;">
+        <thead class="table-primary">
+            <tr>
+                <th>Sr.No</th>
+                <th>Email ID</th>
+                <th>Organization</th>
+                <th>Registration Number</th>
+                <th>Address</th>
+                <th>City</th>
+                <th>Sports</th>
+                <th>Website</th>
+                <th>Instagram</th>
+                <th>Head Name</th>
+                <th>Contact</th>
+                <th>Pic</th>
+                <th>Other Information</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="obj in jsonorg">
+                <td>{{$index+1}}</td>
+                <td>{{obj.emailid}}</td>
+                <td>{{obj.orgname}}</td>
+                <td>{{obj.regnumber}}</td>
+                <td>{{obj.address}}</td>
+                <td>{{obj.city}}</td>
+                <td>{{obj.sports}}</td>
+                <td>{{obj.website}}</td>
+                <td>{{obj.insta}}</td>
+                <td>{{obj.head}}</td>
+                <td>{{obj.contact}}</td>
+                <td><img ng-src="{{obj.picurl}}" width="100"></td>
+                <td>{{obj.otherinfo}}</td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+
+</html>
